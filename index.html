@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual Mode Game</title>
+
+    <style>
+        body{
+            background-color: black;
+        }
+     #gameArea {
+        margin: auto;
+    width: 1300px;
+    height: 580px;
+    border: 2px solid black;
+    position: relative;
+    background-image: url(./universe_0.jpg);
+    overflow: hidden;
+    border: 4PX solid gray;
+    border-radius: 20px;
+}
+
+#player {
+    width: 40px;
+    height: 40px;
+    background-color: red;
+    position: absolute;
+    top: 535px;
+    left: 500px;
+    border: 2px solid;
+    border-radius: 50%; /* circle player */
+}
+button{
+    float: right;
+    margin-inline: 4px;
+    background-color: brown;
+    color: antiquewhite;
+    font-weight: bold;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    cursor: pointer;
+    margin-top: 4px;
+    border-radius: 4px;
+}
+
+
+       .obstacle {
+    width: 60px;
+    height: 60px;
+    /* background:black; */
+    background-image: url(./oip.jpg);
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 50px;
+  
+}
+#stop{
+    margin: auto;
+    width: 700px;
+    height: 400px;
+    background-color:black;
+    border: 4px solid gray;
+    box-shadow: 2px  2px  500px  4px gray ;
+    position: relative;
+    top: 60px;
+    display: none;
+    z-index: 1;
+}
+        /* Horizontal mode background */
+        /* .side-scroll {
+            animation: sideMove 0.6s linear infinite;
+        } */
+
+        /* @keyframes sideMove {
+            0% { background-position-x: 0; }
+            100% { background-position-x: 800px; }
+        } */
+         
+    </style>
+</head>
+
+<body>
+<div id="gameArea">
+    <div id="player"></div>
+    <div id="stop">
+        <h1 style="text-align: center; color: aliceblue; font-weight: bold; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"> 🚫 ----- Game :  stop ------  🚫</h1>
+        <p style="text-align: center; color: white; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-weight: bold; font-size: 30px;">IF YOU WANT TO START 🚦 GAME THEN PRESS <SPAN style="color:gray;">---W--- &  ---w---</SPAN></p>
+    </div>
+</div>
+<div id="menu">
+ <button onclick="difficult(`Hard`)">Hard </button>
+<button onclick="difficult(`Medium`)">Medium</button>
+<button onclick="difficult(`Easy`)" >Easy</button>
+<button style="position: relative; right: 150px;" onclick="resume('Resume')">STOP</button>
+
+</div>
+<div style="color: whitesmoke;" id="score">Score: 0</div>
+
+<script>
+    let spamMode = false;
+
+    document.addEventListener("keydown" , function(e){
+     if(e.key==="S" || e.key==="s"){
+        spamMode = true;
+        spam("spam");
+        player.style.display="none";  
+     }
+     if(e.key==="A"|| e.key==="a" || e.key==="E"||e.key==="e"||e.key==="H"||e.key==="h"||e.key==="M"||e.key==="m"||e.key==="W"||e.key==="w" ){
+        player.style.display="block";
+        spamMode =false;
+     }
+    });
+    function spam(spam){
+   game = 100;  
+   spamrate = 0.2;
+
+
+    }
+    document.addEventListener("keydown", function(e){
+      if(e.key==="R"|| e.key==="r"){
+        resume("resu"); 
+      }
+    });
+     function resume(resu){
+        game = 0;
+        spamrate = 0;
+        // myspeed = 0;
+        let st = document.getElementById("stop").style.display="block";
+        document.addEventListener("keydown", function(e){
+          if(e.key==="W"||e.key==="w"){
+              game = 9;
+              spamrate = 0.05;
+              myspeed = 7;
+             document.getElementById("stop").style.display="none";
+          }
+        });
+        return;
+       }
+  
+     document.addEventListener("keydown",function(e){
+       if(e.key==="H" || e.key==="h"){
+        difficult("Hard")
+       }
+       if(e.key==="M" || e.key==="m"){
+        difficult("Medium")
+       }
+        if(e.key==="E" || e.key==="e"){
+        difficult("Easy")
+       }
+     });
+  let game = 9;
+  let spamrate = 0.05;
+  let myspeed = 7;
+function difficult(level){
+if(level==="Easy"){
+     game = 4;
+   spamrate = 0.03;
+   myspeed = 5; 
+}
+else if(level==="Medium"){
+   game = 9;
+   spamrate = 0.05;
+   myspeed = 7; 
+
+}
+else if(level==="Hard"){
+   game = 14;
+   spamrate = 0.07;
+   myspeed = 15; 
+}
+// document.getElementById("menu")
+}
+
+const player = document.getElementById("player");
+const gameArea = document.getElementById("gameArea");
+const scoreEl = document.getElementById("score");
+
+let score = 0;
+let running = true;
+let horizontalMode = false;
+
+let playerPos = { x: 230, y: 530 };
+let keys = {};
+
+document.addEventListener("keydown", e => keys[e.key] = true);
+document.addEventListener("keyup", e => keys[e.key] = false);
+
+let obstacles = [];
+let horizontalObstacles = [];
+
+
+// ------------- MODE 1 OBSTACLE -------------
+function createFallingObstacle() {
+    let obs = document.createElement("div");
+    obs.classList.add("obstacle");
+    obs.style.left = Math.random() * 1250 + "px";
+    obs.style.top = "0px";
+    gameArea.appendChild(obs);
+    return obs;
+}
+
+
+// ------------- MODE 2 OBSTACLE -------------
+function createHorizontalObstacle() {
+    let obs = document.createElement("div");
+    obs.classList.add("obstacle");
+    obs.style.left = "-60px";
+    obs.style.top = Math.random() * 520 + "px";
+    gameArea.appendChild(obs);
+    return obs;
+}
+
+
+// ------------- MODE 1 UPDATE (UP → DOWN) -------------
+function updateFallingMode() {
+
+    // movement
+    if (keys["ArrowLeft"] && playerPos.x > 0) playerPos.x -= myspeed;
+    if (keys["ArrowRight"] && playerPos.x < 1250) playerPos.x += myspeed;
+     player.style.left = playerPos.x + "px";
+    if(keys["ArrowUp"] && playerPos.y>4) playerPos.y -=myspeed;
+    if(keys["ArrowDown"] && playerPos.y<530) playerPos.y +=myspeed;
+
+
+   
+  player.style.top = playerPos.y + "px";
+    obstacles.forEach((obs, i) => {
+
+        let y = parseInt(obs.style.top);
+        y += game;
+        obs.style.top = y + "px";
+
+        // collision
+        if(!spamMode){
+        if (
+            y + 40 > playerPos.y &&
+            y < playerPos.y + 40 &&
+            parseInt(obs.style.left) + 40 > playerPos.x &&
+            parseInt(obs.style.left) < playerPos.x + 40
+        ) {
+            running = false;
+            alert("GAME OVER! Score: " + score);
+            location.reload();
+        }};
+
+        // remove passed obstacle
+        if (y > 800) {
+            obs.remove();
+            obstacles.splice(i, 1);
+            score++;
+            scoreEl.innerText = "Score: " + score;
+        }
+    });
+
+    // spawn
+    if (Math.random() < spamrate) obstacles.push(createFallingObstacle());
+
+    // MODE CHANGE
+    if (score >= 5000) startHorizontalMode();
+}
+
+function startHorizontalMode() {
+    horizontalMode = true;
+
+    // player shift
+    playerPos.y = 350;
+    player.style.top = playerPos.y + "px";
+
+    // clear old obstacles
+    obstacles.forEach(o => o.remove());
+    obstacles = [];
+
+    // start scrolling background
+    // gameArea.classList.add("side-scroll");
+}
+
+function updateHorizontalMode() {
+
+    // movement (optional)
+    if (keys["ArrowUp"] && playerPos.y > 4) playerPos.y -= myspeed;
+    if (keys["ArrowDown"] && playerPos.y < 530) playerPos.y += myspeed;
+    if(keys[`ArrowLeft`]&& playerPos.x>0) playerPos.x -=myspeed;
+    if(keys[`ArrowRight`]&& playerPos.x<1280) playerPos.x +=myspeed;
+    player.style.left=playerPos.x + "px";
+
+    player.style.top = playerPos.y + "px";
+
+    horizontalObstacles.forEach((obs, i) => {
+
+        let x = parseInt(obs.style.left);
+        x += game;
+        obs.style.left = x + "px";
+
+        // collision0
+        if (
+            x + 40 > playerPos.x &&
+            x < playerPos.x + 40 &&
+            parseInt(obs.style.top) + 40 > playerPos.y &&
+            parseInt(obs.style.top) < playerPos.y + 40
+        ) {
+            running = false;
+            alert("GAME OVER! Score: " + score);
+            location.reload();
+        }
+
+        if (x > 1400) {
+            obs.remove();
+            horizontalObstacles.splice(i, 1);
+            score++;
+            scoreEl.innerHTML=`score` + score
+        }
+    });
+
+    // spawn
+    if (Math.random() < spamrate) horizontalObstacles.push(createHorizontalObstacle());
+}
+
+
+
+// ------------- MAIN LOOP -------------
+function updateGame() {
+
+    if (!running) return;
+
+    if (!horizontalMode) updateFallingMode();
+    else updateHorizontalMode();
+
+    requestAnimationFrame(updateGame);
+}
+
+updateGame();
+
+</script>
+
+</body>
+</html>
