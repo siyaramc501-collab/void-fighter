@@ -236,17 +236,23 @@ function updateFallingMode(){
             💰 1000+ score = ₹100
         </p>
         <div style="text-align:center;margin-top:20px;">
-            <button onclick="restartGame()" style="
-                padding:12px 25px;
-                font-size:18px;
-                background:green;
-                color:white;
-                border:none;
-                border-radius:6px;
-                cursor:pointer;
-            ">
-                🔄 RESTART GAME
-            </button>
+          <button 
+  onclick="restartGame()" 
+  ontouchstart="restartGame()"
+  type="button"
+  style="
+    padding:12px 25px;
+    font-size:18px;
+    background:green;
+    color:white;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+  "
+>
+🔄 RESTART GAME
+</button>
+
         </div>
     `;
 }
@@ -279,6 +285,7 @@ gameArea.addEventListener("touchmove",e=>{
 
 </body>
 </html>
+
 
 
 
