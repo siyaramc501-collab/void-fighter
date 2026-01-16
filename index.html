@@ -170,6 +170,16 @@ function resume(){
         }
     });
 }
+function top(){
+    game=2; spamrate=1;
+    document.getElementById("game").style.display="none"
+    document.addEventListener("keydown",function(e){
+        if(e.key==="w"||e.key==="w"){
+            game=7; spamrate=0.5; myspeed = 7;
+            document.getElementById("STOP").style.display="none";
+        }
+    });
+}
 /* FALLING OBSTACLE */
 function createFallingObstacle(){
     let obs=document.createElement("div");
