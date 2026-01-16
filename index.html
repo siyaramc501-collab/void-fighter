@@ -205,8 +205,7 @@ function updateFallingMode(){
             if(y+40>playerPos.y && y<playerPos.y+40 &&
                parseInt(obs.style.left)+40>playerPos.x &&
                parseInt(obs.style.left)<playerPos.x+40){
-                alert("GAME OVER! Score: "+score);
-                location.reload();
+            gameOver();
             }
         }
 
@@ -219,6 +218,23 @@ function updateFallingMode(){
     });
 
     if(Math.random()<spamrate)obstacles.push(createFallingObstacle());
+}
+// relod
+    function gameOver(){
+    running = false;
+
+    document.getElementById("stop").style.display = "block";
+    document.getElementById("stop").innerHTML = `
+        <h1 style="color:white;text-align:center;">💥 GAME OVER 💥</h1>
+        <p style="color:white;text-align:center;font-size:22px;">
+            Score : ${score}<br><br>
+            Restarting...
+        </p>
+    `;
+
+    setTimeout(() => {
+        location.reload();
+    }, 400); // 🔥 instant feel
 }
 
 /* MAIN LOOP */
@@ -248,5 +264,6 @@ gameArea.addEventListener("touchmove",e=>{
 
 </body>
 </html>
+
 
 
