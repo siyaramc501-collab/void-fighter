@@ -51,8 +51,7 @@ body{
     max-height: 60px;
     min-width: 35px;
     min-height: 35px;
-    /* background-image: url(./oip.jpg); */
-    background-color:blue;
+    background-image: url(./oip.jpg);
     background-size: cover;
     position: absolute;
     border-radius: 50%;
@@ -148,18 +147,23 @@ const scoreEl = document.getElementById("score");
 let score = 0;
 let running = true;
 let horizontalMode = false;
+
 let playerPos = { x: 200, y: 500 };
 let keys = {};
+
 document.addEventListener("keydown", e => keys[e.key]=true);
 document.addEventListener("keyup", e => keys[e.key]=false);
+
 let obstacles = [];
 let horizontalObstacles = [];
+
 /* DIFFICULTY */
 function difficult(level){
     if(level==="Easy"){ game=4; spamrate=0.03; myspeed=5; }
     if(level==="Medium"){ game=9; spamrate=0.05; myspeed=7; }
     if(level==="Hard"){ game=14; spamrate=0.07; myspeed=15; }
 }
+
 /* STOP */
 function resume(){
     game=0; spamrate=0;
@@ -171,16 +175,7 @@ function resume(){
         }
     });
 }
-function top(){
-    game=2; spamrate=1;
-    document.getElementById("game").style.display="none"
-    document.addEventListener("keydown",function(e){
-        if(e.key==="w"||e.key==="w"){
-            game=7; spamrate=0.5; myspeed = 7;
-            document.getElementById("STOP").style.display="none";
-        }
-    });
-}
+
 /* FALLING OBSTACLE */
 function createFallingObstacle(){
     let obs=document.createElement("div");
@@ -190,6 +185,7 @@ function createFallingObstacle(){
     gameArea.appendChild(obs);
     return obs;
 }
+
 /* UPDATE MODE 1 */
 function updateFallingMode(){
     if(keys["ArrowLeft"]&&playerPos.x>0)playerPos.x-=myspeed;
@@ -204,6 +200,7 @@ function updateFallingMode(){
         let y=parseInt(obs.style.top);
         y+=game;
         obs.style.top=y+"px";
+
         if(!spamMode){
             if(y+40>playerPos.y && y<playerPos.y+40 &&
                parseInt(obs.style.left)+40>playerPos.x &&
@@ -212,6 +209,7 @@ function updateFallingMode(){
                 location.reload();
             }
         }
+
         if(y>gameArea.clientHeight){
             obs.remove();
             obstacles.splice(i,1);
@@ -219,8 +217,10 @@ function updateFallingMode(){
             scoreEl.innerText="Score: "+score;
         }
     });
+
     if(Math.random()<spamrate)obstacles.push(createFallingObstacle());
 }
+
 /* MAIN LOOP */
 function updateGame(){
     if(!running)return;
@@ -228,6 +228,7 @@ function updateGame(){
     requestAnimationFrame(updateGame);
 }
 updateGame();
+
 /* ✅ TOUCH DRAG CONTROL */
 let tx=null, ty=null;
 gameArea.addEventListener("touchstart",e=>{
@@ -247,4 +248,3 @@ gameArea.addEventListener("touchmove",e=>{
 
 </body>
 </html>
-
