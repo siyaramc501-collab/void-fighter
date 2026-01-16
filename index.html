@@ -72,6 +72,8 @@ button{
 
 /* STOP SCREEN */
 #stop{
+    
+    pointer-events: auto; /* 👈 VERY IMPORTANT */
     margin:auto;
     width:80%;
     height:60%;
@@ -175,6 +177,73 @@ function resume(){
         }
     });
 }
+// relod
+function gameOver(){
+    running = false;
+    game = 0;
+    spamrate = 0;
+
+    const stopBox = document.getElementById("stop");
+    stopBox.style.display = "block";
+
+    stopBox.innerHTML = `
+        <h1 style="color:white;text-align:center;">🔥 GAME OVER 🔥</h1>
+        <p style="color:white;text-align:center;font-size:24px;">
+            🎯 Score : <b>${score}</b><br><br>
+            📸 Screenshot le lo <br>
+            💰 1000+ score = ₹100
+        </p>
+        <div style="text-align:center;margin-top:20px;">
+           <button 
+  onclick="restartGame()" 
+  ontouchstart="restartGame()"
+  type="button"
+  style="
+    padding:12px 25px;
+    font-size:18px;
+    background:green;
+    color:white;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+  "
+>
+🔄 RESTART GAME
+</button>
+
+        </div>
+    `;
+}
+function restartGame(){
+    // reset score
+    score = 0;
+    scoreEl.innerText = "Score: 0";
+
+    // remove obstacles
+    obstacles.forEach(o => o.remove());
+    obstacles = [];
+
+    // reset player
+    playerPos.x = 200;
+    playerPos.y = 400;
+    player.style.left = playerPos.x + "px";
+    player.style.top  = playerPos.y + "px";
+
+    // hide overlay
+    const stopBox = document.getElementById("stop");
+    stopBox.style.display = "none";
+
+    // reset game
+    running = true;
+    game = 9;
+    spamrate = 0.05;
+    myspeed = 7;
+
+    // restart loop
+    requestAnimationFrame(updateGame);
+}
+
+
 
 /* FALLING OBSTACLE */
 function createFallingObstacle(){
@@ -205,7 +274,8 @@ function updateFallingMode(){
             if(y+40>playerPos.y && y<playerPos.y+40 &&
                parseInt(obs.style.left)+40>playerPos.x &&
                parseInt(obs.style.left)<playerPos.x+40){
-            gameOver();
+               gameOver();
+
             }
         }
 
@@ -219,44 +289,6 @@ function updateFallingMode(){
 
     if(Math.random()<spamrate)obstacles.push(createFallingObstacle());
 }
-// relod
- function gameOver(){
-    running = false;
-    game = 0;
-    spamrate = 0;
-
-    const stopBox = document.getElementById("stop");
-    stopBox.style.display = "block";
-
-    stopBox.innerHTML = `
-        <h1 style="color:white;text-align:center;">🔥 GAME OVER 🔥</h1>
-        <p style="color:white;text-align:center;font-size:24px;">
-            🎯 Score : <b>${score}</b><br><br>
-            📸 Screenshot le lo <br>
-            💰 1000+ score = ₹100
-        </p>
-        <div style="text-align:center;margin-top:20px;">
-          <button 
-  onclick="restartGame()" 
-  ontouchstart="restartGame()"
-  type="button"
-  style="
-    padding:12px 25px;
-    font-size:18px;
-    background:green;
-    color:white;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
-  "
->
-🔄 RESTART GAME
-</button>
-
-        </div>
-    `;
-}
-
 
 /* MAIN LOOP */
 function updateGame(){
@@ -285,8 +317,3 @@ gameArea.addEventListener("touchmove",e=>{
 
 </body>
 </html>
-
-
-
-
-
